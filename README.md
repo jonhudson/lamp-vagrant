@@ -1,2 +1,2 @@
 # lamp-vagrant
-Shell script to provision a Vagrant box with LAMP stack
+Shell script to provision an Ubuntu Vagrant box with LAMP stack
