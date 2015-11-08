@@ -3,11 +3,11 @@
 ### CHECK THESE DEFAULTS!
 
 MYSQL_ROOT_PW="root"
-DOC_ROOT="/var/www/public"
+DOC_ROOT="/var/www/web"
 
-SYSTEM_PACKAGES=(git curl vim)
+SYSTEM_PACKAGES=(git curl vim nmap)
 
-ADDITIONAL_PHP_PACKAGES=(php5-mcrypt php5-curl)
+ADDITIONAL_PHP_PACKAGES=(php5-mcrypt php5-curl php5-intl php5-gd)
 
 PATH_TO_VHOST="/etc/apache2/sites-available/000-default.conf"
 
@@ -67,12 +67,15 @@ echo "###### INSTALLING XDEBUG ########"
 sudo pecl install xdebug
 xdbg_path=$(find / -name 'xdebug.so' 2> /dev/null)
 
-if ! [ -d /etc/php5/conf.d ] && ! [ -e /etc/php5/conf.d ]
-then
-    sudo mkdir /etc/php5/conf.d
-fi
+INI_FILES=$(sudo find / -name "php.ini")
 
-sudo echo "zend_extension=${xdbg_path}" > /etc/php5/conf.d/xdebug.ini
+for file in ${INI_FILES[@]}
+do
+    sudo echo "zend_extension=${xdbg_path}" >> ${file}
+    sudo echo "xdebug.remote_enable=1" >> ${file}
+    sudo echo "xdebug.remote_connect_back=1" >> ${file}
+done
+
 sudo service apache2 restart
 
 echo "###### INSTALLING COMPOSER ########"
